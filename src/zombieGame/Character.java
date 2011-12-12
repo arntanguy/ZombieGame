@@ -5,6 +5,7 @@ package zombieGame;
  *
  */
 public class Character {
+    //nomala
 	protected String name;
 	// name of the character
 	protected int healthPoints; // represents the health
