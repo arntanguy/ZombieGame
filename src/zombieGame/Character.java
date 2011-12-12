@@ -1,4 +1,4 @@
-package zombiegame;
+package zombieGame;
 /**
  * Parent Character class
  * @author pylaffon
@@ -25,6 +25,8 @@ public class Character {
 	public int getHealthPoints() {
 		return healthPoints;
 	}
+	
+	public void endOfTurn(){};
 	/**
 	 * Decrease the number of HP by a certain amount. HP cannot go below 0.
 	 * @param reduction number of HP to reduce

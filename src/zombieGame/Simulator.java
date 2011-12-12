@@ -1,5 +1,6 @@
-package zombiegame;
+package zombieGame;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 /**
  * Simulator for Midterm Zombiegame.
@@ -47,13 +48,43 @@ public class Simulator {
 			Character encountered = characterList.get((i+1)%(characterList.size()));
 			c.encounterCharacter(encountered);
 		}
-		// Dead characters are removed from the character list
-		// ... add your code here (question 6) ...
-		// Each vampire (if he is thirsty) bites the first Human in the list
-		// who has not been bitten yet
-		// ... add your code here (question 7a) ...
-		//Humans that have been bitten become vampires
-		//... add your code here (question 7b) ...
+		 // Dead characters are removed from the character list
+        // ... add your code here (question 6) ...
+        // Need an iterator for removing objects while looping over a collection
+        for (Iterator<Character> it = characterList.iterator(); it.hasNext();) {
+            Character c = it.next();
+            if (c.getHealthPoints() <= 0) {
+                it.remove();
+            }
+        }
+     // Each vampire (if he is thirsty) bites the first Human in the list who has not been bitten yet
+     // ... add your code here (question 7a) ...
+      for (Character c1 : characterList) {
+          if ((c1 instanceof Vampire) && ((Vampire) c1).getIsThirsty()) {
+              Vampire v = (Vampire) c1;
+
+              // Find the first human in the list, and bite him
+              boolean hasBitten = false;
+              for (Character c2 : characterList) {
+                  if (!hasBitten && (c2 instanceof Human) && !((Human) c2).getHasBeenBitten()) {
+                      v.bite((Human) c2);
+                      hasBitten = true;
+                  }
+              }
+          }
+      }
+		// Humans that have been bitten become vampires
+
+		// ... add your code here (question 7b) ...
+
+		for (int i = 0; i < characterList.size(); ++i) {
+			Character c = characterList.get(i);
+			if (c instanceof Human && ((Human) c).getHasBeenBitten()) {
+				Vampire newVampire = ((Human) c).turnIntoVampire();
+				characterList.set(i, newVampire);
+				c = null;
+			}
+		}
 		//Perform end-of-turn actions for all characters (question 4)
 		for (int i = 0; i < characterList.size(); ++i) {
 			Character c = characterList.get(i);

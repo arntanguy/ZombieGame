@@ -1,12 +1,17 @@
-package zombiegame;
+package zombieGame;
 /**
  * Vampire class, derives from Character.
  * @author pylaffon
  *
  */
 public class Vampire extends Character {
+
 	private boolean isThirsty;
-	// ... add your constructor code here (question 2) ...
+	 // ... add your constructor code here (question 2) ...
+    public Vampire(String name, int healthPoints) {
+        super(name, healthPoints);
+        isThirsty = false;
+    }
 	// Accessors and mutators
 	public boolean getIsThirsty() {
 		return isThirsty;
@@ -34,5 +39,20 @@ public class Vampire extends Character {
 		say("I have bitten you, " + h.getName() + "!");
 		// Vampire is not thirsty anymore
 		isThirsty = false;
+	}
+	
+	protected void attack(Character c) {
+
+	    c.reduceHealthPoints(10);
+
+	}
+
+	public void encounterCharacter(Character c) {
+
+	    // Vampires always attack 
+	    say(c.getName() + ", I'm gonna kill you!!");
+
+	    attack(c);
+
 	}
 }

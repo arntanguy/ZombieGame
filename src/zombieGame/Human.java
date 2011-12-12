@@ -1,4 +1,4 @@
-package zombiegame;
+package zombieGame;
 /**
  * Human class, derives from Character
  * @author pylaffon
@@ -43,6 +43,12 @@ public class Human extends Character {
 as this human; the new vampire is immediately thirsty
 	 */
 	public Vampire turnIntoVampire() {
-		// ... add your code here (question 7b) ...
+		return new Vampire(name, healthPoints);
+	}
+	
+	public void encounterCharacter(Character c) { 
+
+	    say("Go away!");
+
 	}
 }
