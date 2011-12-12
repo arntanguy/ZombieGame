@@ -5,8 +5,7 @@ package zombieGame;
  *
  */
 public class Character {
-    //nomala
-	protected String name;
+    protected String name;
 	// name of the character
 	protected int healthPoints; // represents the health
 	// (once down to 0, this character will be destroyed)
@@ -15,6 +14,7 @@ public class Character {
 	 * @param name name of the character
 	 * @param healthPoints initial HP
 	 */
+
 	public Character(String name, int healthPoints) {
 		this.name = name;
 		this.healthPoints = healthPoints;
