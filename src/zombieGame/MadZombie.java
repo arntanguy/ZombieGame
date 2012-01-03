@@ -2,9 +2,9 @@ package zombieGame;
 
 public class MadZombie extends Zombie {
 
-    public MadZombie(String name, int healthPoints) {
+    public MadZombie(String name, int healthPoints, Location location, Field field) {
 
-        super(name, healthPoints);
+        super(name, healthPoints, location, field);
 
 }
 

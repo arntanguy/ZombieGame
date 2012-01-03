@@ -1,4 +1,8 @@
 package zombieGame;
+
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Vampire class, derives from Character.
  * @author pylaffon
@@ -7,9 +11,9 @@ package zombieGame;
 public class Vampire extends Character {
 
 	private boolean isThirsty;
-	 // ... add your constructor code here (question 2) ...
-    public Vampire(String name, int healthPoints) {
-        super(name, healthPoints);
+	
+    public Vampire(String name, int healthPoints, Location location, Field field) {
+        super(name, healthPoints, location, field);
         isThirsty = false;
     }
 	// Accessors and mutators
@@ -19,6 +23,7 @@ public class Vampire extends Character {
 	public void setIsThirsty(boolean isThirsty) {
 		this.isThirsty = isThirsty;
 	}
+	
 	/**
 	 * Method triggered on each character at the end of each turn.
 	 */
@@ -29,6 +34,67 @@ public class Vampire extends Character {
 			say("I am thirsty now!!");
 		}
 	}
+	
+	 /**
+     * This is what the fox does most of the time: it hunts for rabbits. In the
+     * process, it might breed, die of hunger, or die of old age.
+     * 
+     * @param field
+     *            The field currently occupied.
+     * @param newFoxes
+     *            A list to add newly born foxes to.
+     */
+    public void hunt(List<Vampire> newVampires) {
+        if (getAlive()) {
+            // Move towards a source of food if found.
+            Location newLocation = findFood(getLocation());
+            if (newLocation == null) {
+                // No food found - try to move to a free location.
+                newLocation = getField().freeAdjacentLocation(getLocation());
+            }
+            // See if it was possible to move.
+            if (newLocation != null) {
+                setLocation(newLocation);
+            } else {
+                // Overcrowding.
+                setDead();
+            }
+        }
+    }
+    
+    /**
+     * Tell the vampire to look for humans adjacent to its current location. Only
+     * the first live human is eaten.
+     * 
+     * @param location
+     *            Where in the field it is located.
+     * @return Where food was found, or null if it wasn't.
+     */
+    private Location findFood(Location location) {
+        List<Location> adjacent = getField().adjacentLocations(location);
+        Iterator<Location> it = adjacent.iterator();
+        while (it.hasNext()) {
+            Location where = it.next();
+            Object character = getField().getObjectAt(where);
+            if (character instanceof Human) {
+                Human h = (Human) character;
+                if (h.getAlive()) {
+                	if(isThirsty){
+                		bite(h);
+                	}
+                	else{
+                		attack(h);
+                		if(!h.getAlive()){
+                			h.setDead();
+                			return where;
+                		}
+                	}
+                }
+            }
+        }
+        return null;
+    }
+
 	/**
 	 * Method called when a vampire decides to bite a human
 	 * @param h Human who gets bitten by this vampire

@@ -10,16 +10,66 @@ public class Character {
 	// name of the character
 	protected int healthPoints; // represents the health
 	// (once down to 0, this character will be destroyed)
+	// The character's position.
+    private Location location;
+    // The field occupied.
+    private Field field;
+    private boolean alive;
 	/**
 	 * Constructor of Character class.
 	 * @param name name of the character
 	 * @param healthPoints initial HP
 	 */
 
-	public Character(String name, int healthPoints) {
+	public Character(String name, int healthPoints, Location location, Field field) {
 		this.name = name;
 		this.healthPoints = healthPoints;
+		this.field = field;
+		setLocation(location);
+		alive = true;
 	}
+	/**
+     * Place the character at the new location in the given field.
+     * 
+     * @param newLocation
+     *            The character's new location.
+     */
+    protected void setLocation(Location newLocation) {
+        if (location != null) {
+            field.clear(location);
+        }
+        location = newLocation;
+        field.place(this, newLocation);
+    }
+	
+	 /**
+     * Return the character's location.
+     * 
+     * @return The character's location.
+     */
+    public Location getLocation() {
+        return location;
+    }
+    
+    /**
+     * Return the character's alive.
+     * 
+     * @return The character's alive.
+     */
+    public boolean getAlive() {
+        return alive;
+    }
+    
+    
+    /**
+     * Return the character's field.
+     * 
+     * @return The character's field.
+     */
+    public Field getField() {
+        return field;
+    }
+    
 	// Accessors
 	public String getName() {
 		return name;
@@ -27,6 +77,19 @@ public class Character {
 	public int getHealthPoints() {
 		return healthPoints;
 	}
+	
+	  /**
+     * Indicate that the character is no longer alive. It is removed from the
+     * field.
+     */
+    public void setDead() {
+        alive = false;
+        if (location != null) {
+            field.clear(location);
+            location = null;
+            field = null;
+        }
+    }
 	
 	public void endOfTurn(){};
 	/**
@@ -37,6 +100,7 @@ public class Character {
 		healthPoints = healthPoints - reduction;
 		if (healthPoints < 0) {
 			healthPoints = 0;
+			alive = false;
 		}
 	}
 	/**
