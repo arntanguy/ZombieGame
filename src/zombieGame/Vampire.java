@@ -108,17 +108,14 @@ public class Vampire extends Character {
 	}
 	
 	protected void attack(Character c) {
-
 	    c.reduceHealthPoints(10);
-
 	}
 
 	public void encounterCharacter(Character c) {
-
-	    // Vampires always attack 
-	    say(c.getName() + ", I'm gonna kill you!!");
-
-	    attack(c);
-
+	    if (getAlive()) {
+    	    // Vampires always attack 
+    	    say(c.getName() + ", I'm gonna kill you!!");
+    	    attack(c);
+	    }
 	}
 }

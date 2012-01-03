@@ -18,6 +18,7 @@ public class Human extends Character {
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 3;
 	
+    private Weapons weapon;
 	/**
 	 * Constructor of Human class.
 	 * At the beginning of the game, humans just had dinner, and have not been bitten yet.
@@ -28,6 +29,7 @@ public class Human extends Character {
 		super(name, healthPoints, location, field);
 		hasBeenBitten = false;
 		turnsSinceLastMeal = 0;
+		weapon = null;
 	}
 	// Accessors and mutators
 	public boolean getHasBeenBitten() {
@@ -113,10 +115,24 @@ public class Human extends Character {
 	public Zombie turnIntoZombie() {
 		return new Zombie(name, 30, getLocation(), getField());
 	}
+
+    public void encounterCharacter(Character c) {
+        //vérifie si human est toujours en vie et qu'il possède une arme, il attaque l'ennemi
+        if (getAlive()) {
+            if ((c instanceof Zombie || c instanceof Vampire) && weapon != null) {
+                say("I have a weapon!---------------------------------------------------------------------");
+                weapon.attackWeap(c);
+                if (weapon.isDead()) {
+                    weapon = null;
+                }
+            }
+            else {
+                say("Go away!");
+            }
+        }
+    }
 	
-	public void encounterCharacter(Character c) { 
-
-	    say("Go away!");
-
+	public void setWeapon(Weapons weapon) {
+	    this.weapon = weapon;
 	}
 }

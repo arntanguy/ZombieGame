@@ -39,6 +39,9 @@ public class Simulator {
     // A graphical view of the simulation.
     private SimulatorView view;
 
+    private List<ShotGun> shotguns;
+    private List<LiquidNitrogen> nitrogens;
+    private List<WoodenStake> stakes;
 	
 	// List of characters currently in the game
 	private ArrayList<Character> characterList;
@@ -61,10 +64,10 @@ public class Simulator {
 //		characterList.add(v2);
 //		characterList.add(z1);
 //		characterList.add(mz1);
-		humans = new ArrayList<Human>();
+		/*humans = new ArrayList<Human>();
 	    zombies = new ArrayList<Zombie>();
 	    vampires = new ArrayList<Vampire>();
-	    madZombies = new ArrayList<MadZombie>();
+	    madZombies = new ArrayList<MadZombie>();*/
 //	    humans.add(h1);
 //	    humans.add(h2);
 //	    vampires.add(v1);
@@ -72,6 +75,9 @@ public class Simulator {
 //	    zombies.add(z1);
 //	    madZombies.add(mz1);
 	    
+	    shotguns = new ArrayList<ShotGun>();
+	    nitrogens = new ArrayList<LiquidNitrogen>();
+	    stakes = new ArrayList<WoodenStake>();
 	    
 	    field = new Field(DEFAULT_DEPTH, DEFAULT_WIDTH);
 
@@ -81,6 +87,7 @@ public class Simulator {
 	    view.setColor(Zombie.class, Color.green);
 	    view.setColor(Vampire.class, Color.black);
 	    view.setColor(MadZombie.class, Color.red);
+	    
 
 	    // Setup a valid starting point.
 	    reset();
@@ -158,21 +165,8 @@ public class Simulator {
 			Character c = characterList.get(i);
 			c.endOfTurn();
 		}
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
      * Run the simulation from its current state for a single step. Iterate over
@@ -212,7 +206,6 @@ public class Simulator {
                 }
         	}
         }
-        
 
         // Add the newly born humans, vampires and zombies to the main lists.
         characterList.addAll(newHumans);
@@ -275,10 +268,10 @@ public class Simulator {
      */
     public void reset() {
         step = 0;
-        humans.clear();
+        /*humans.clear();
         zombies.clear();
         vampires.clear();
-        madZombies.clear();
+        madZombies.clear();*/
         populate();
 
         // Show the starting state in the view.
@@ -297,6 +290,21 @@ public class Simulator {
                     Location location = new Location(row, col);
                     Human h = new Human("Human", HP_HUMANS, location, field);
                     characterList.add(h);
+                    //donne des armes au hasard aux humains
+                    int quantite = 5;
+                    int puis = 2;
+                    switch (rand.nextInt(6))
+                    {
+                        case 1 :
+                            h.setWeapon(new ShotGun(quantite, puis));
+                            break;
+                        case 2 :
+                            h.setWeapon(new LiquidNitrogen(quantite));
+                            break;
+                        case 3 :
+                            h.setWeapon(new WoodenStake());
+                            break;
+                    }
                 } else if (rand.nextInt(6) <= VAMPIRE_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Vampire v = new Vampire("Vampire 1", HP_VAMPIRES, location, field);

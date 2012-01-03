@@ -86,6 +86,7 @@ public class Character {
      */
     public void setDead() {
         alive = false;
+        healthPoints = 0;
         if (location != null) {
             field.clear(location);
             location = null;

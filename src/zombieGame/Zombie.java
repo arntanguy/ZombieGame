@@ -39,7 +39,7 @@ public class Zombie extends Character {
      *            A list to add newly born foxes to.
      */
     public void hunt(List<Zombie> newZombies) {
-        if (getAlive()) {
+        if (getAlive() && touchByWeap == 0) {
             // Move towards a source of food if found.
             Location newLocation = findFood(getLocation());
             if (newLocation == null) {
@@ -103,13 +103,11 @@ public class Zombie extends Character {
 	public void encounterCharacter(Character c) {
 
 	    // Attack if the enemy is human or vampire (then 50% chance)
-
-	    if (c instanceof Human || (c instanceof Vampire && Simulator.GenerateRandomBoolean())) {
-
-	        super.say(c.getName() + ", I'm gonna kill you!!"); // want Character#say not Zombie#say
-
-	        attack(c);
-
+	    if (getAlive() && touchByWeap == 0) {
+    	    if (c instanceof Human || (c instanceof Vampire && Simulator.GenerateRandomBoolean())) {
+    	        super.say(c.getName() + ", I'm gonna kill you!!"); // want Character#say not Zombie#say
+    	        attack(c);
+    	    }
 	    }
 
 	}
