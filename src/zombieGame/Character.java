@@ -8,13 +8,15 @@ package zombieGame;
 public class Character {
     protected String name;
 	// name of the character
-	protected int healthPoints; // represents the health
+    protected int healthPoints; // represents the health
 	// (once down to 0, this character will be destroyed)
 	// The character's position.
     private Location location;
     // The field occupied.
     private Field field;
     private boolean alive;
+    
+    
 	/**
 	 * Constructor of Character class.
 	 * @param name name of the character

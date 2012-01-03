@@ -9,6 +9,9 @@ import java.util.List;
  *
  */
 public class Zombie extends Character {
+    
+    private int touchByWeap; // permet de savoir si zombie a été touché par un shotgun
+    
 	/**
 	 * Constructor of Zombie class.
 	 * @param name name of the character
@@ -16,6 +19,7 @@ public class Zombie extends Character {
 	 */
 	public Zombie(String name, int healthPoints, Location location, Field field) {
 		super(name, healthPoints, location, field);
+		touchByWeap = 0;
 	}
 	/**
 	 * Output a character's saying to the screen
@@ -84,6 +88,10 @@ public class Zombie extends Character {
 	 */
 	public void endOfTurn() {
 		// Do nothing. Zombies are useless anyway...
+	    if (touchByWeap > 0) {
+	        --touchByWeap;
+	    }
+	    
 	}
 	
 	protected void attack(Character c) {
@@ -105,4 +113,23 @@ public class Zombie extends Character {
 	    }
 
 	}
+	
+	/**
+	 * Change l'état du touchByWeap
+	 * 
+	 * @param touchByWeap
+	 */
+	public void setTouchByWeap(int touchByWeap) {
+	    this.touchByWeap += touchByWeap;
+	}
+	
+	/**
+	 * Renvoie touchByWeap, si touchByWeap est supérieur à 0 alors le zombie a été touché par un shotgun
+	 * sinon s'il est égal à 0 alors il n'a pas été touché par un shotgun
+	 * 
+	 * @param touchByWeap
+	 */
+    public int getTouchByWeap() {
+         return touchByWeap;
+    }
 }
