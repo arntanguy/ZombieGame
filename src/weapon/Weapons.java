@@ -1,4 +1,6 @@
-package zombieGame;
+package weapon;
+
+import character.Character;
 
 public abstract class Weapons {
 

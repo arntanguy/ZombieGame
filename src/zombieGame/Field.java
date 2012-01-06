@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+
+
 /**
  * Represent a rectangular grid of field positions. Each position is able to
  * store a single animal.
@@ -153,6 +155,7 @@ public class Field {
     public Location freeAdjacentLocation(Location location) {
         // The available free ones.
         List<Location> free = getFreeAdjacentLocations(location);
+        
         if (free.size() > 0) {
             return free.get(0);
         } else {

@@ -1,7 +1,13 @@
-package zombieGame;
+package character;
 
 import java.util.Iterator;
 import java.util.List;
+
+import zombieGame.Field;
+import zombieGame.Location;
+import zombieGame.Simulator;
+
+
 
 /**
  * Zombie class, derives from Character.
@@ -29,15 +35,6 @@ public class Zombie extends Character {
 		System.out.println(name + " says: BRAIIIIIINS!");
 	}
 	
-	 /**
-     * This is what the fox does most of the time: it hunts for rabbits. In the
-     * process, it might breed, die of hunger, or die of old age.
-     * 
-     * @param field
-     *            The field currently occupied.
-     * @param newFoxes
-     *            A list to add newly born foxes to.
-     */
     public void hunt(List<Zombie> newZombies) {
         if (getAlive() && touchByWeap == 0) {
             // Move towards a source of food if found.
@@ -54,6 +51,7 @@ public class Zombie extends Character {
                 setDead();
             }
         }
+        
     }
     /**
      * Tell the vampire to look for humans adjacent to its current location. Only
@@ -75,7 +73,7 @@ public class Zombie extends Character {
                 	attack(h);
                 	if(!h.getAlive()){
                			h.setDead();
-               			
+               			return where;
                 	}
                 }
             }
@@ -101,7 +99,6 @@ public class Zombie extends Character {
 	}
 
 	public void encounterCharacter(Character c) {
-
 	    // Attack if the enemy is human or vampire (then 50% chance)
 	    if (getAlive() && touchByWeap == 0) {
     	    if (c instanceof Human || (c instanceof Vampire && Simulator.GenerateRandomBoolean())) {

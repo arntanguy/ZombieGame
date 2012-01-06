@@ -4,6 +4,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import weapon.LiquidNitrogen;
+import weapon.ShotGun;
+import weapon.WoodenStake;
+
+import character.Character;
+import character.Human;
+import character.MadZombie;
+import character.Vampire;
+import character.Zombie;
+
 /**
  * Simulator for Midterm Zombiegame.
  * @author pylaffon
@@ -250,6 +261,7 @@ public class Simulator {
 		System.out.println("Game starts with " + sim.nbHumansAlive() + " humans!");
 		//Iterate until no alive human remains
 		while (sim.nbHumansAlive() > 0) {
+		    sim.simulateOneStep();
 			sim.nextTurn();
 		}
 		System.out.println("All humans have been eaten!");
@@ -291,7 +303,7 @@ public class Simulator {
                     Human h = new Human("Human", HP_HUMANS, location, field);
                     characterList.add(h);
                     //donne des armes au hasard aux humains
-                    int quantite = 5;
+                    /*int quantite = 5;
                     int puis = 2;
                     switch (rand.nextInt(6))
                     {
@@ -304,7 +316,7 @@ public class Simulator {
                         case 3 :
                             h.setWeapon(new WoodenStake());
                             break;
-                    }
+                    }*/
                 } else if (rand.nextInt(6) <= VAMPIRE_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Vampire v = new Vampire("Vampire 1", HP_VAMPIRES, location, field);

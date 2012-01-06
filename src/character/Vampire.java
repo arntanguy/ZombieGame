@@ -1,7 +1,14 @@
-package zombieGame;
+package character;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import zombieGame.Field;
+import zombieGame.Location;
+import zombieGame.Simulator;
+
+
 
 /**
  * Vampire class, derives from Character.
@@ -35,26 +42,16 @@ public class Vampire extends Character {
 		}
 	}
 	
-	 /**
-     * This is what the fox does most of the time: it hunts for rabbits. In the
-     * process, it might breed, die of hunger, or die of old age.
-     * 
-     * @param field
-     *            The field currently occupied.
-     * @param newFoxes
-     *            A list to add newly born foxes to.
-     */
+
     public void hunt(List<Vampire> newVampires) {
         if (getAlive()) {
             // Move towards a source of food if found.
             Location newLocation = findFood(getLocation());
-            if (newLocation == null) {
-                // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
-            }
+            // try to move to a free location.
+            Location loc = getField().freeAdjacentLocation(getLocation());
             // See if it was possible to move.
-            if (newLocation != null) {
-                setLocation(newLocation);
+            if (loc != null) {
+                setLocation(loc);
             } else {
                 // Overcrowding.
                 setDead();
@@ -63,8 +60,7 @@ public class Vampire extends Character {
     }
     
     /**
-     * Tell the vampire to look for humans adjacent to its current location. Only
-     * the first live human is eaten.
+     * Tell the vampire to look for humans adjacent to its current location. 
      * 
      * @param location
      *            Where in the field it is located.
@@ -81,12 +77,14 @@ public class Vampire extends Character {
                 if (h.getAlive()) {
                 	if(isThirsty){
                 		bite(h);
+                		/*Vampire vampire = h.turnIntoVampire();
+                		h = null;*/
+                		return where;
                 	}
                 	else{
                 		attack(h);
                 		if(!h.getAlive()){
                 			h.setDead();
-                			return where;
                 		}
                 	}
                 }
@@ -118,4 +116,5 @@ public class Vampire extends Character {
     	    attack(c);
 	    }
 	}
+	
 }

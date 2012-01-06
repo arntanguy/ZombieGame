@@ -1,4 +1,7 @@
-package zombieGame;
+package character;
+
+import zombieGame.Field;
+import zombieGame.Location;
 
 public class MadZombie extends Zombie {
 

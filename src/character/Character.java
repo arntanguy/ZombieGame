@@ -1,5 +1,9 @@
 // test du plugin git
-package zombieGame;
+package character;
+
+import zombieGame.Field;
+import zombieGame.Location;
+
 /**
  * Parent Character class
  * @author pylaffon

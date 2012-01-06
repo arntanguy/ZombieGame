@@ -1,7 +1,14 @@
-package zombieGame;
+package character;
 
 import java.util.List;
 import java.util.Random;
+
+import weapon.Weapons;
+import zombieGame.Field;
+import zombieGame.Location;
+import zombieGame.Randomizer;
+
+
 
 /**
  * Human class, derives from Character
@@ -17,7 +24,7 @@ public class Human extends Character {
     private static final double BREEDING_PROBABILITY = 0.15;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 3;
-	
+	// Indique s'il l'humain possède une arme
     private Weapons weapon;
 	/**
 	 * Constructor of Human class.
@@ -31,10 +38,12 @@ public class Human extends Character {
 		turnsSinceLastMeal = 0;
 		weapon = null;
 	}
+	
 	// Accessors and mutators
 	public boolean getHasBeenBitten() {
 		return hasBeenBitten;
 	}
+	
 	public void setHasBeenBitten(boolean hasBeenBitten) {
 		this.hasBeenBitten = hasBeenBitten;
 	}
@@ -120,7 +129,7 @@ public class Human extends Character {
         //vérifie si human est toujours en vie et qu'il possède une arme, il attaque l'ennemi
         if (getAlive()) {
             if ((c instanceof Zombie || c instanceof Vampire) && weapon != null) {
-                say("I have a weapon!---------------------------------------------------------------------");
+                say("I have a weapon!");
                 weapon.attackWeap(c);
                 if (weapon.isDead()) {
                     weapon = null;
@@ -134,5 +143,9 @@ public class Human extends Character {
 	
 	public void setWeapon(Weapons weapon) {
 	    this.weapon = weapon;
+	}
+	
+	public Weapons getWeapon() {
+	    return weapon;
 	}
 }
