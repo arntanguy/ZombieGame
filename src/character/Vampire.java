@@ -77,8 +77,6 @@ public class Vampire extends Character {
                 if (h.getAlive()) {
                 	if(isThirsty){
                 		bite(h);
-                		/*Vampire vampire = h.turnIntoVampire();
-                		h = null;*/
                 		return where;
                 	}
                 	else{

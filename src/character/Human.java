@@ -66,9 +66,10 @@ public class Human extends Character {
      * @param newHumans
      *            A list to add newly born humans to.
      */
-    public void run(List<Human> newHumans) {
+    public int run(List<Human> newHumans) {
+        int b = 0;
         if (getAlive()) {
-            giveBirth(newHumans);
+            b =giveBirth(newHumans);
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if (newLocation != null) {
@@ -78,6 +79,7 @@ public class Human extends Character {
                 setDead();
             }
         }
+        return b;
     }
     
     /**
@@ -87,16 +89,18 @@ public class Human extends Character {
      * @param newhumans
      *            A list to add newly born humans to.
      */
-    private void giveBirth(List<Human> newhumans) {
+    private int giveBirth(List<Human> newhumans) {
         // New humans are born into adjacent locations.
         // Get a list of adjacent free locations.
         List<Location> free = getField().getFreeAdjacentLocations(getLocation());
         int births = breed();
-        for (int b = 0; b < births && free.size() > 0; b++) {
+        int b= 0;
+        for (b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Human young = new Human("human", 100, loc, getField());
             newhumans.add(young);
         }
+        return b;
     }
     
     /**
@@ -128,15 +132,17 @@ public class Human extends Character {
     public void encounterCharacter(Character c) {
         //vérifie si human est toujours en vie et qu'il possède une arme, il attaque l'ennemi
         if (getAlive()) {
-            if ((c instanceof Zombie || c instanceof Vampire) && weapon != null) {
-                say("I have a weapon!");
-                weapon.attackWeap(c);
-                if (weapon.isDead()) {
-                    weapon = null;
+            if (c instanceof Zombie || c instanceof Vampire) {
+                if (weapon != null) {
+                    say("I have a weapon!");
+                    weapon.attackWeap(c);
+                    if (weapon.isDead()) {
+                        weapon = null;
+                    }
                 }
-            }
-            else {
-                say("Go away!");
+                else {
+                    say("Go away!");
+                }
             }
         }
     }
