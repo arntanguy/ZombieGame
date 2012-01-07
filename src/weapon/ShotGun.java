@@ -1,5 +1,7 @@
 package weapon;
 
+import zombieGame.Field;
+import zombieGame.Location;
 import character.Character;
 import character.Zombie;
 
@@ -8,7 +10,8 @@ public class ShotGun extends Weapons {
     private int munitions;
     private int puissance;
     
-    public ShotGun (int munitions, int puissance) {
+    public ShotGun (int munitions, int puissance, Field field, Location location) {
+        super(field, location);
         if (munitions < 0 || puissance < 0) 
             throw new IllegalArgumentException("Ne doit pas être inférieur à 0");
         this.munitions = munitions;

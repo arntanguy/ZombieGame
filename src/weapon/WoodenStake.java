@@ -1,5 +1,7 @@
 package weapon;
 
+import zombieGame.Field;
+import zombieGame.Location;
 import character.Character;
 import character.Vampire;
 
@@ -7,7 +9,8 @@ public class WoodenStake extends Weapons {
     
     private boolean utilise;
     
-    public WoodenStake () {
+    public WoodenStake (Field field, Location location) {
+        super(field, location);
         utilise = false;
     }
     

@@ -266,6 +266,7 @@ public class Simulator {
                 e.printStackTrace();
             }
 		}
+		sim.simulateOneStep();
 		System.out.println("All humans have been eaten!");
 	}
 	/**
@@ -304,7 +305,6 @@ public class Simulator {
                     Location location = new Location(row, col);
                     Human h = new Human("Human" + row + col, HP_HUMANS, location, field);
                     characterList.add(h);
-                    h.setWeapon(new LiquidNitrogen(100000000));
                     //donne des armes au hasard aux humainss
                     /*int quantite = 1000000;
                     int puis = 2000;
