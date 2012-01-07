@@ -18,17 +18,24 @@ public class LiquidNitrogenTester {
     private Human human;
     private Zombie zombie;
     private LiquidNitrogen nitrogen;
+    private Field field;
+    private Location location;
 
     private final int QUANTITE = 3;
     private final int HP = 100;
+    private final int ROW = 2;
+    private final int COL = 3;
+    private final int TAILLE = 4;
     
     @Before
     public void setUp() {
+        location = new Location(ROW, COL);
+        field = new Field(TAILLE, TAILLE);
         String nomHuman = "Human";
         String nomZombie = "Zombie";
         int width = 100;
         int depht = 100;
-        nitrogen = new LiquidNitrogen(QUANTITE);
+        nitrogen = new LiquidNitrogen(QUANTITE, field, location);
         Location location = new Location(3, 3);
         Field field = new Field(depht, width);
         zombie = new Zombie(nomZombie, HP, location, field);
@@ -74,6 +81,6 @@ public class LiquidNitrogenTester {
     @Test (expected = java.lang.IllegalArgumentException.class)
     public void testExcLiquidNitrogen() {
         int quantite = -4;
-        new LiquidNitrogen(quantite);
+        new LiquidNitrogen(quantite, field, location);
     }
 }

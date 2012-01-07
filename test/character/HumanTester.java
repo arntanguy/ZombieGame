@@ -126,14 +126,14 @@ public class HumanTester {
         Zombie zombie = new Zombie("Zombie", HP, location, field);
         human.encounterCharacter(zombie);
         assertEquals(HP, zombie.getHealthPoints());
-        LiquidNitrogen nitrogen = new LiquidNitrogen(1);
+        LiquidNitrogen nitrogen = new LiquidNitrogen(1, field, location);
         human.setWeapon(nitrogen);
         human.encounterCharacter(zombie);
     }
     
     @Test
     public void testSetWeapon() {
-        LiquidNitrogen nitrogen = new LiquidNitrogen(1);
+        LiquidNitrogen nitrogen = new LiquidNitrogen(1, field, location);
         human.setWeapon(nitrogen);
         assertEquals(nitrogen, human.getWeapon());
     }

@@ -16,16 +16,24 @@ public class WoodenStakeTester {
     private Human human;
     private Vampire vampire;
     private WoodenStake stake;
+    private Field field;
+    private Location location;
+    
+    private final int ROW = 2;
+    private final int COL = 3;
+    private final int TAILLE = 4;
 
     @Before
     public void setUp() {
+        location = new Location(ROW, COL);
+        field = new Field(TAILLE, TAILLE);
         String nomHuman = "Human";
         String nomVampire = "Vampire";
         int hpHuman = 100;
         int hpVampire = 30;
         int width = 100;
         int depht = 100;
-        stake = new WoodenStake();
+        stake = new WoodenStake(field, location);
         Location location = new Location(3, 3);
         Field field = new Field(depht, width);
         vampire = new Vampire(nomVampire, hpVampire, location, field);

@@ -17,20 +17,26 @@ public class ShotGunTester {
     private Human human;
     private Zombie zombie;
     private ShotGun shotgun;
+    private Field field;
+    private Location location;
     
     private final int MUNITIONS = 6;
     private final int PUISSANCE = 2;
     private final int HP_HUMAN = 100;
+    private final int ROW = 2;
+    private final int COL = 3;
+    private final int TAILLE = 4;
     
     @Before
     public void setUp() {
         String nomHuman = "Human";
         String nomZombie = "Zombie";
-        
+        location = new Location(ROW, COL);
+        field = new Field(TAILLE, TAILLE);
         int hpZombie = 30;
         int width = 100;
         int depht = 100;
-        shotgun = new ShotGun(MUNITIONS, PUISSANCE);
+        shotgun = new ShotGun(MUNITIONS, PUISSANCE, field, location);
         Location location = new Location(3, 3);
         Field field = new Field(depht, width);
         zombie = new Zombie(nomZombie, hpZombie, location, field);
@@ -82,12 +88,12 @@ public class ShotGunTester {
     @Test (expected = java.lang.IllegalArgumentException.class)
     public void testExcMunition() {
         int munition = -4;
-        new ShotGun(munition, PUISSANCE);
+        new ShotGun(munition, PUISSANCE, field, location);
     }
     
     @Test (expected = java.lang.IllegalArgumentException.class)
     public void testExcPuissance() {
         int puissance = -4;
-        new ShotGun(MUNITIONS, puissance);
+        new ShotGun(MUNITIONS, puissance, field, location);
     }
 }
