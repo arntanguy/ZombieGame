@@ -13,7 +13,7 @@ public class Character {
     protected String name;
 	// name of the character
     protected int healthPoints; // represents the health
-	// (once down to 0, this character will be destroyed)
+								// (once down to 0, this character will be destroyed)
 	// The character's position.
     private Location location;
     // The field occupied.
@@ -58,9 +58,9 @@ public class Character {
     }
     
     /**
-     * Return the character's alive.
+     * Return whether the character is alive.
      * 
-     * @return The character's alive.
+     * @return Whether the character iss alive.
      */
     public boolean getAlive() {
         return alive;
@@ -84,7 +84,7 @@ public class Character {
 		return healthPoints;
 	}
 	
-	  /**
+	/**
      * Indicate that the character is no longer alive. It is removed from the
      * field.
      */

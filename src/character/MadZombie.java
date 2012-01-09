@@ -1,11 +1,12 @@
 package character;
 
-import java.util.Iterator;
-import java.util.List;
-
 import zombieGame.Field;
 import zombieGame.Location;
 
+/**
+ * MadZombie class, derives from Zombie.
+ *
+ */
 public class MadZombie extends Zombie {
 
     public MadZombie(String name, int healthPoints, Location location, Field field) {

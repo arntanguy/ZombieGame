@@ -41,7 +41,11 @@ public class Vampire extends Character {
 		}
 	}
 	
-
+	/** 
+	 * A vampire need to find food. 
+	 * He will move toward a food source, or die.
+	 * @param newVampires
+	 */
     public void hunt(List<Vampire> newVampires) {
         if (getAlive()) {
             // Move towards a source of food if found.
