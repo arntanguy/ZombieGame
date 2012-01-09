@@ -1,8 +1,9 @@
-package weapon;
+package object;
 
 import zombieGame.Field;
 import zombieGame.Location;
 import character.Character;
+import character.TypeCharacter;
 import character.Zombie;
 
 public class ShotGun extends Weapons {
@@ -11,7 +12,7 @@ public class ShotGun extends Weapons {
     private int puissance;
     
     public ShotGun (int munitions, int puissance, Field field, Location location) {
-        super(field, location);
+        super(field, location, 3);
         if (munitions < 0 || puissance < 0) 
             throw new IllegalArgumentException("Ne doit pas être inférieur à 0");
         this.munitions = munitions;
@@ -19,13 +20,15 @@ public class ShotGun extends Weapons {
     }
     
     public void attackWeap (Character character) {
-        if (munitions > 0 && character instanceof Zombie) {
+        if (munitions > 0 && character.getCharacter() == TypeCharacter.ZOMBIE) {
             --munitions;
             ((Zombie) character).setTouchByWeap(puissance);
         }
     }
     
     public void recharge(int munitions) {
+        if (munitions < 0) 
+            throw new IllegalArgumentException("Ne doit pas être inférieur à 0");
         this.munitions += munitions;
     }
     

@@ -2,15 +2,18 @@ package weapon;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import weapon.LiquidNitrogen;
+import object.LiquidNitrogen;
 import zombieGame.Field;
 import zombieGame.Location;
 
 import character.Human;
+import character.Vampire;
 import character.Zombie;
 
 public class LiquidNitrogenTester {
@@ -26,19 +29,16 @@ public class LiquidNitrogenTester {
     private final int ROW = 2;
     private final int COL = 3;
     private final int TAILLE = 4;
+    private final String NOM_ZOMBIE = "Zombie";
     
     @Before
     public void setUp() {
         location = new Location(ROW, COL);
         field = new Field(TAILLE, TAILLE);
         String nomHuman = "Human";
-        String nomZombie = "Zombie";
-        int width = 100;
-        int depht = 100;
+
         nitrogen = new LiquidNitrogen(QUANTITE, field, location);
-        Location location = new Location(3, 3);
-        Field field = new Field(depht, width);
-        zombie = new Zombie(nomZombie, HP, location, field);
+        zombie = new Zombie(NOM_ZOMBIE, HP, new Location(3, 3), field);
         human = new Human(nomHuman, HP, location, field);
         human.setWeapon(nitrogen);
     }
@@ -52,9 +52,13 @@ public class LiquidNitrogenTester {
 
     @Test
     public void testAttackWeap() {
-        human.encounterCharacter(zombie);
+        human.run(new ArrayList<Human>());
         assertEquals(false, zombie.getAlive());
         assertEquals(QUANTITE-1, nitrogen.getQuantite());
+        Vampire vampire = new Vampire("Vampire", HP, new Location(human.getLocation().getRow(), 
+                human.getLocation().getCol()-1), field);
+        human.run(new ArrayList<Human>());
+        assertEquals(QUANTITE-2, nitrogen.getQuantite());
     }
     
     @Test
@@ -68,7 +72,9 @@ public class LiquidNitrogenTester {
     public void testIsDead() {
         assertEquals(false, nitrogen.isDead());
         for(int i = 0; i < QUANTITE; ++i) {
-            human.encounterCharacter(zombie);
+            human.run(new ArrayList<Human>());
+            human.setLocation(location);
+            zombie = new Zombie(NOM_ZOMBIE, HP, new Location(3, 3), field);
         }
         assertEquals(true, nitrogen.isDead());
     }
@@ -82,5 +88,11 @@ public class LiquidNitrogenTester {
     public void testExcLiquidNitrogen() {
         int quantite = -4;
         new LiquidNitrogen(quantite, field, location);
+    }
+    
+    @Test (expected = java.lang.IllegalArgumentException.class)
+    public void testExcRecharge() {
+        int recharge = -3;
+        nitrogen.recharge(recharge);
     }
 }

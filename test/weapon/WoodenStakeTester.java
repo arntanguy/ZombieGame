@@ -2,6 +2,10 @@ package weapon;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
+import object.WoodenStake;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,22 +26,16 @@ public class WoodenStakeTester {
     private final int ROW = 2;
     private final int COL = 3;
     private final int TAILLE = 4;
-
+    private final String NOM_VAMP = "Vampire";
+    private final int HP = 100;
     @Before
     public void setUp() {
-        location = new Location(ROW, COL);
         field = new Field(TAILLE, TAILLE);
         String nomHuman = "Human";
-        String nomVampire = "Vampire";
-        int hpHuman = 100;
-        int hpVampire = 30;
-        int width = 100;
-        int depht = 100;
+        location = new Location(ROW, COL);
         stake = new WoodenStake(field, location);
-        Location location = new Location(3, 3);
-        Field field = new Field(depht, width);
-        vampire = new Vampire(nomVampire, hpVampire, location, field);
-        human = new Human(nomHuman, hpHuman, location, field);
+        vampire = new Vampire(NOM_VAMP, HP, new Location(3, 3), field); 
+        human = new Human(nomHuman, HP, location, field);
         human.setWeapon(stake);
     }
 
@@ -50,23 +48,18 @@ public class WoodenStakeTester {
     
     @Test
     public void testAttackWeap() {
-        assertEquals(false, stake.getUtilise());
-        human.encounterCharacter(vampire);
+        human.run(new ArrayList<Human>());
         assertEquals(false, vampire.getAlive());
-        assertEquals(true, stake.getUtilise());
+        assertEquals(true, stake.isDead());
+        vampire = new Vampire(NOM_VAMP, HP, new Location(3, 2), field); 
+        human.run(new ArrayList<Human>());
+        assertEquals(true, vampire.getAlive());
     }
 
     @Test
     public void testIsDead() {
         assertEquals(false, stake.isDead());
-        human.encounterCharacter(vampire);
+        human.run(new ArrayList<Human>());
         assertEquals(true, stake.isDead());
-    }
-    
-    @Test
-    public void testgetUtilise() {
-        assertEquals(false, stake.getUtilise());
-        human.encounterCharacter(vampire);
-        assertEquals(true, stake.getUtilise());
     }
 }

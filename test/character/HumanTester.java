@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-import weapon.LiquidNitrogen;
+import object.LiquidNitrogen;
 import zombieGame.Field;
 import zombieGame.Location;
 
@@ -85,25 +85,6 @@ public class HumanTester {
     }
     
     @Test
-    public void testBirth() {
-        List <Human> listHuman = new ArrayList<Human>();
-        listHuman.add(human);
-        int j = 0;
-        while (j < 30) {
-            List <Human> newBorn = new ArrayList<Human>();
-            int b = human.run(newBorn);
-            System.out.println(b);
-            for (int i = 0; i < newBorn.size(); i++) {
-                listHuman.add(newBorn.get(i));
-            }
-            ++j;
-        }
-        //System.out.println(listHuman.size());
-        
-        
-    }
-    
-    @Test
     public void testTurnIntoVampire() {
         Vampire v = human.turnIntoVampire();
         assertEquals(NOM_HUMAN, v.getName());
@@ -136,5 +117,12 @@ public class HumanTester {
         LiquidNitrogen nitrogen = new LiquidNitrogen(1, field, location);
         human.setWeapon(nitrogen);
         assertEquals(nitrogen, human.getWeapon());
+    }
+    
+    @Test
+    public void testGetCharacter() {
+        assertEquals(TypeCharacter.HUMAN, human.getCharacter());
+        Character character = new Human (NOM_HUMAN, HP, location, field);
+        assertEquals(TypeCharacter.HUMAN, character.getCharacter());
     }
 }

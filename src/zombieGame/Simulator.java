@@ -5,9 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import weapon.LiquidNitrogen;
-import weapon.ShotGun;
-import weapon.WoodenStake;
+import object.LiquidNitrogen;
+import object.ShotGun;
+import object.WoodenStake;
+
 
 import character.Character;
 import character.Human;

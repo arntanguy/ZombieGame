@@ -1,9 +1,12 @@
 package character;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import weapon.Weapons;
+import object.ShotGun;
+import object.Weapons;
+
 import zombieGame.Field;
 import zombieGame.Location;
 import zombieGame.Randomizer;
@@ -17,6 +20,8 @@ import zombieGame.Randomizer;
  */
 public class Human extends Character {
 	private boolean hasBeenBitten; // false, until a vampire bites this human
+	private boolean hasBeenKillByZombie; // false, until a zombie kills this human
+	private boolean haveWeapon;
 	private int turnsSinceLastMeal; // the human will lose health if he's too hungry
 	// A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
@@ -35,6 +40,8 @@ public class Human extends Character {
 	public Human(String name, int healthPoints, Location location, Field field) {
 		super(name, healthPoints, location, field);
 		hasBeenBitten = false;
+		hasBeenKillByZombie = false;
+		haveWeapon = false;
 		turnsSinceLastMeal = 0;
 		weapon = null;
 	}
@@ -46,6 +53,15 @@ public class Human extends Character {
 	
 	public void setHasBeenBitten(boolean hasBeenBitten) {
 		this.hasBeenBitten = hasBeenBitten;
+	}
+	
+	// Accessors and mutators
+	public boolean getHasBeenKillByZombie() {
+		return hasBeenKillByZombie;
+	}
+	
+	public void setHasBeenKillByZombie(){
+		this.hasBeenKillByZombie = true;
 	}
 	/**
 	 * Method triggered on each character at the end of each turn.
@@ -59,6 +75,14 @@ public class Human extends Character {
 		}
 	}
 	
+	public void eat(){
+		turnsSinceLastMeal = 0;
+	}
+	
+	public void recharge(int nb){
+		((ShotGun)weapon).recharge(nb);
+	}
+	
 	 /**
      * This is what the human does most of the time - it runs around. Sometimes
      * it will breed or die of old age.
@@ -66,20 +90,57 @@ public class Human extends Character {
      * @param newHumans
      *            A list to add newly born humans to.
      */
-    public int run(List<Human> newHumans) {
-        int b = 0;
+    public void run(List<Human> newHumans) {
         if (getAlive()) {
-            b =giveBirth(newHumans);
+            giveBirth(newHumans);
+            Location newLocation = null;
+            if(haveWeapon){
+            	 say("I have a weapon!");
+            	 // Move towards a source of food if found.
+                findTarget(getLocation());
+            }
             // Try to move into a free location.
-            Location newLocation = getField().freeAdjacentLocation(getLocation());
+            newLocation = getField().freeAdjacentLocation(getLocation());
             if (newLocation != null) {
+                //System.out.println(newLocation);
                 setLocation(newLocation);
             } else {
-                // Overcrowding.
+                // Overcrowding
                 setDead();
             }
         }
-        return b;
+    }
+    /**
+     * Tell the human to look for target adjacent to its current location. 
+     * 
+     * @param location
+     *            Where in the field it is located.
+     * @return Where target was found, or null if it wasn't.
+     */
+    private void findTarget(Location location) {
+        List<Location> adjacent = getField().adjacentLocations(location);
+        Iterator<Location> it = adjacent.iterator();
+        while (it.hasNext()) {
+            Location where = it.next();
+            Object character = getField().getObjectAt(where);
+            Character c = (Character) character;
+            if (c != null) {
+                if ((c.getCharacter() == TypeCharacter.VAMPIRE) && 
+                        ((weapon.GetTypeTarget()==1) || (weapon.GetTypeTarget()==2))) {
+                    Vampire v = (Vampire) character;
+                    if (v.getAlive()) {
+                    	weapon.attackWeap(v);
+                    }
+                }
+                if ((c.getCharacter() == TypeCharacter.ZOMBIE) && 
+                        ((weapon.GetTypeTarget()==2)||(weapon.GetTypeTarget()==3))) {
+                    Zombie z = (Zombie) character;
+                    if (z.getAlive()) {
+                    	weapon.attackWeap(z);
+                    }
+                }
+            }
+        }
     }
     
     /**
@@ -89,18 +150,16 @@ public class Human extends Character {
      * @param newhumans
      *            A list to add newly born humans to.
      */
-    private int giveBirth(List<Human> newhumans) {
+    private void giveBirth(List<Human> newhumans) {
         // New humans are born into adjacent locations.
         // Get a list of adjacent free locations.
         List<Location> free = getField().getFreeAdjacentLocations(getLocation());
         int births = breed();
-        int b= 0;
-        for (b = 0; b < births && free.size() > 0; b++) {
+        for (int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Human young = new Human("human", 100, loc, getField());
             newhumans.add(young);
         }
-        return b;
     }
     
     /**
@@ -128,30 +187,21 @@ public class Human extends Character {
 	public Zombie turnIntoZombie() {
 		return new Zombie(name, 30, getLocation(), getField());
 	}
-
-    public void encounterCharacter(Character c) {
-        //vérifie si human est toujours en vie et qu'il possède une arme, il attaque l'ennemi
-        if (getAlive()) {
-            if (c instanceof Zombie || c instanceof Vampire) {
-                if (weapon != null) {
-                    say("I have a weapon!");
-                    weapon.attackWeap(c);
-                    if (weapon.isDead()) {
-                        weapon = null;
-                    }
-                }
-                else {
-                    say("Go away!");
-                }
-            }
-        }
-    }
 	
 	public void setWeapon(Weapons weapon) {
 	    this.weapon = weapon;
+	    haveWeapon = true;
+	}
+	public boolean getHaveWeapon(){
+		return haveWeapon;
 	}
 	
 	public Weapons getWeapon() {
 	    return weapon;
 	}
+	
+	public TypeCharacter getCharacter() {
+	    return TypeCharacter.HUMAN;
+	}
+	
 }

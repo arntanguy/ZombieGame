@@ -40,7 +40,7 @@ public class Character {
      * @param newLocation
      *            The character's new location.
      */
-    protected void setLocation(Location newLocation) {
+    public void setLocation(Location newLocation) {
         if (location != null) {
             field.clear(location);
         }
@@ -99,6 +99,7 @@ public class Character {
     }
 	
 	public void endOfTurn(){};
+	
 	/**
 	 * Decrease the number of HP by a certain amount. HP cannot go below 0.
 	 * @param reduction number of HP to reduce
@@ -106,11 +107,11 @@ public class Character {
 	public void reduceHealthPoints(int reduction) {
 		healthPoints = healthPoints - reduction;
 		if (healthPoints < 0) {
-			/*healthPoints = 0;
-			alive = false;*/
-		    setDead();
+			healthPoints = 0;
+			alive = false;
 		}
 	}
+	
 	/**
 	 * Output a character's saying to the screen
 	 * @param str what the character says
@@ -118,6 +119,7 @@ public class Character {
 	public void say(String str) {
 		System.out.println(name + " says: " + str);
 	}
+	
 	/**
 	 * Method triggered when the character described by the current object
 	 * meets another character, and does something to him (for example, attack).
@@ -127,4 +129,12 @@ public class Character {
 		// Default action: do nothing
 		System.out.println(name + " meets " + c.name + " and does not attack!");
 	}
+	
+	/**
+	 * Allow to know the type's character
+	 * @return the type's character
+	 */
+    public TypeCharacter getCharacter() {
+        return TypeCharacter.CHARACTER;
+    }
 }
