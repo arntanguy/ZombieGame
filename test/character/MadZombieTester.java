@@ -12,9 +12,8 @@ import zombieGame.Location;
 
 public class MadZombieTester {
 
-    private Vampire vampire;
-    private Zombie zombie;
     private MadZombie madZombie;
+    private Human human;
     private Field field;
     private Location location;
     private final int TAILLE = 4;
@@ -26,8 +25,7 @@ public class MadZombieTester {
     public void setUp() {
         location = new Location(ROW, COL);
         field = new Field(TAILLE, TAILLE);
-        zombie = new Zombie("Zombie", HP, new Location(ROW-1, COL), field);
-        vampire = new Vampire ("Vampire", HP, new Location(ROW, COL-1), field);
+        human = new Human("Human", HP, new Location(ROW-1, COL), field);
         madZombie = new MadZombie("MadZombie", HP, location, field);
     }
 
@@ -35,16 +33,14 @@ public class MadZombieTester {
     public void tearDown() {
         location = null;
         field = null;
-        zombie = null;
-        vampire = null;
+        human = null;
         madZombie = null;
     }
 
     @Test
     public void testHunt() {
         madZombie.hunt(null);
-        assertEquals(HP-50, zombie.getHealthPoints());
-        assertEquals(HP-50, vampire.getHealthPoints());
+        assertEquals(HP-50, human.getHealthPoints());
     }
     
     @Test
