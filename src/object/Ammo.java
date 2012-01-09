@@ -12,8 +12,10 @@ public class Ammo extends BaseObject{
 	}
 	
 	public void takeAmmo(Human h){
-		if(h.getWeapon().GetTypeTarget()==3){
-			h.recharge(nbAmmo);
+		if(h.getHaveWeapon()){
+			if(h.getWeapon().GetTypeTarget()==3){
+				h.recharge(nbAmmo);
+			}
 		}
 	}
 

@@ -115,7 +115,7 @@ public class Human extends Character {
 		                    f.setPut();
 		                }
 		                if (newObject instanceof Ammo){
-		                    Ammo a = (Ammo) newObject;
+		                    Ammo a = (Ammo) newObject;		                    
 		                    a.takeAmmo(this);
 		                }
 		                if (newObject instanceof WoodenStake) {

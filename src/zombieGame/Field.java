@@ -261,8 +261,7 @@ public class Field {
 						// Exclude invalid locations and the original location.
 						if (nextCol >= 0
 								&& nextCol < width
-								&& (roffset != 0 || coffset != 0)
-								&& !(getObjectAt(nextRow, nextCol) instanceof BaseObject)) {
+								&& (roffset != 0 || coffset != 0)){
 							locations.add(new Location(nextRow, nextCol));
 						}
 					}

@@ -307,7 +307,7 @@ public class Simulator {
     	Random rand2 = new Random();
     	List<Location> free = field.getFreeLocations();
     	 for (Location next : free) {
-             if (rand.nextInt(100)<4) {
+             if (rand.nextInt(50)<4) {
                  switch(rand2.nextInt(4)){
                  case 0:
                 	 new Food(field, next);
