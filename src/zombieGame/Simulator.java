@@ -5,16 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import object.LiquidNitrogen;
-import object.ShotGun;
-import object.WoodenStake;
+import object.*;
 
-
+import character.*;
 import character.Character;
-import character.Human;
-import character.MadZombie;
-import character.Vampire;
-import character.Zombie;
 
 /**
  * Simulator for Midterm Zombiegame.
@@ -26,6 +20,10 @@ public class Simulator {
 	private static final int HP_HUMANS = 100;
 	private static final int HP_VAMPIRES = 150;
 	private static final int HP_ZOMBIES = 30;
+	private int nbHumans = 800;
+	private int nbVampires = 50;
+	private int nbZombies = 200;
+	private int nbMadZombies = 70;
 	// Constants representing configuration information for the simulation.
     // The default width for the grid.
     private static final int DEFAULT_WIDTH = 100;
@@ -39,11 +37,6 @@ public class Simulator {
     private static final double ZOMBIE_CREATION_PROBABILITY = 3;
     // The probability that a human will be created in any given grid position.
     private static final double MADZOMBIE_CREATION_PROBABILITY = 6;
-
-    private List<Human> humans;
-    private List<Zombie> zombies;
-    private List<Vampire> vampires;
-    private List<MadZombie> madZombies;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -99,7 +92,6 @@ public class Simulator {
 	    view.setColor(Zombie.class, Color.green);
 	    view.setColor(Vampire.class, Color.black);
 	    view.setColor(MadZombie.class, Color.red);
-	    
 
 	    // Setup a valid starting point.
 	    reset();
@@ -138,10 +130,14 @@ public class Simulator {
 		 // Dead characters are removed from the character list
         // ... add your code here (question 6) ...
         // Need an iterator for removing objects while looping over a collection
-        for (Iterator<Character> it = characterList.iterator(); it.hasNext();) {
+		for (Iterator<Character> it = characterList.iterator(); it.hasNext();) {
             Character c = it.next();
             if (c.getHealthPoints() <= 0) {
-                it.remove();
+            	if(c.getCharacter() == TypeCharacter.HUMAN && 
+            	        !((Human) c).getHasBeenKillByZombie()){
+                    it.remove();
+                    c.setDead();
+            	}
             }
         }
      // Each vampire (if he is thirsty) bites the first Human in the list who has not been bitten yet
@@ -166,18 +162,25 @@ public class Simulator {
 
 		for (int i = 0; i < characterList.size(); ++i) {
 			Character c = characterList.get(i);
-			if (c instanceof Human && ((Human) c).getHasBeenBitten()) {
+			if (c.getCharacter() == TypeCharacter.HUMAN && 
+			        ((Human) c).getHasBeenKillByZombie()) {
+				Zombie newZombie = ((Human) c).turnIntoZombie();
+				characterList.set(i, newZombie);
+				c = null;
+			}
+			else if (c.getCharacter() == TypeCharacter.HUMAN && 
+			        ((Human) c).getHasBeenBitten()) {
 				Vampire newVampire = ((Human) c).turnIntoVampire();
 				characterList.set(i, newVampire);
 				c = null;
 			}
 		}
+		
 		//Perform end-of-turn actions for all characters (question 4)
 		for (int i = 0; i < characterList.size(); ++i) {
 			Character c = characterList.get(i);
 			c.endOfTurn();
 		}
-
 	}
 	
 	/**
@@ -196,32 +199,21 @@ public class Simulator {
         // Let all characters act.
         for (Iterator<Character> it = characterList.iterator(); it.hasNext();) {
         	Character c = it.next();
-        	if(c instanceof Human){
+        	if(c.getCharacter() == TypeCharacter.HUMAN){
         		Human h = (Human) c;
         		h.run(newHumans);
-                /*if (!h.getAlive()) {
-                    it.remove();
-                } else {
-                    h.run(newHumans);
-                }*/
         	}
-        	if(c instanceof Vampire){
+        	if(c.getCharacter() == TypeCharacter.VAMPIRE){
         		Vampire v = (Vampire) c;
-        		v.hunt(newVampires);
-                /*if (!v.getAlive()) {
-                    it.remove();
-                } else {
-                    v.hunt(newVampires);
-                }*/
+        		v.hunt(newVampires);  
         	}
-        	if(c instanceof Zombie){
+        	if(c.getCharacter() == TypeCharacter.ZOMBIE){
         		Zombie z = (Zombie) c;
         		z.hunt(newZombies);
-                /*if (!z.getAlive()) {
-                    it.remove();
-                } else {
-                    z.hunt(newZombies);
-                }*/
+        	}
+        	if(c.getCharacter() == TypeCharacter.MADZOMBIE){
+        		MadZombie mz = (MadZombie) c;
+        		mz.hunt(newZombies);
         	}
         }
 
@@ -241,11 +233,25 @@ public class Simulator {
 		//and count the number of humans
 		int nbHumans = 0;
 		for (Character character : characterList) {
-			if (character instanceof Human) {
+			if (character.getCharacter() == TypeCharacter.HUMAN) {
 				++nbHumans;
 			}
 		}
 		return nbHumans;
+	}
+	/**
+	 * @return the number of human characters currently in the game
+	 */
+	public int nbZombiesAlive() {
+		//Need to iterate through the list of characters
+		//and count the number of humans
+		int nbZombies = 0;
+		for (Character character : characterList) {
+			if (character.getCharacter() == TypeCharacter.ZOMBIE) {
+				++nbZombies;
+			}
+		}
+		return nbZombies;
 	}
 	/**
 	 * @param args
@@ -260,7 +266,7 @@ public class Simulator {
 		    sim.simulateOneStep();
 		    sim.nextTurn();
 		    try{
-                Thread.sleep(100);
+                Thread.sleep(500);
             }
             catch(InterruptedException e)
             {
@@ -284,10 +290,6 @@ public class Simulator {
      */
     public void reset() {
         step = 0;
-        /*humans.clear();
-        zombies.clear();
-        vampires.clear();
-        madZombies.clear();*/
         populate();
 
         // Show the starting state in the view.
@@ -302,40 +304,51 @@ public class Simulator {
         field.clear();
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
-                if (rand.nextInt(6) <= HUMAN_CREATION_PROBABILITY) {
+                if (rand.nextInt(120) <= HUMAN_CREATION_PROBABILITY) {
+                	if(nbHumans>0){
+	                    Location location = new Location(row, col);
+	                    Human h = new Human("Human", HP_HUMANS, location, field);
+	                    characterList.add(h);
+	                    nbHumans--;
+	                    switch(rand.nextInt(4)){
+    	                    case 0:
+    	                    	ShotGun weapon = new ShotGun(5, 2, field, location);
+    	                    	h.setWeapon(weapon);
+    	                    	break;
+    	                    case 1:
+    	                    	LiquidNitrogen weapon1 = new LiquidNitrogen(2, field, location);
+    	                    	h.setWeapon(weapon1);
+    	                    	break;
+    	                    case 2:
+    	                    	WoodenStake weapon2 = new WoodenStake(field, location);
+    	                    	h.setWeapon(weapon2);
+    	                    	break;
+    	                    default:
+    	                    	break;
+	                    }
+                	}
+                }
+                else if(rand.nextInt(120) <= ZOMBIE_CREATION_PROBABILITY) {
+                	if(nbZombies>0){
+	                    Location location = new Location(row, col);
+	                    Zombie z = new Zombie("Zombie", HP_ZOMBIES, location, field);
+	                    characterList.add(z);
+	                    nbZombies--;
+                	}
+                }
+                else if (rand.nextInt(120) <= VAMPIRE_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    Human h = new Human("Human" + row + col, HP_HUMANS, location, field);
-                    characterList.add(h);
-                    //donne des armes au hasard aux humainss
-                    /*int quantite = 1000000;
-                    int puis = 2000;
-                    switch (rand.nextInt(3))
-                    {
-                        case 1 :
-                            h.setWeapon(new ShotGun(quantite, puis));
-                            break;
-                        case 2 :
-                            h.setWeapon(new LiquidNitrogen(quantite));
-                            break;
-                        case 3 :
-                            h.setWeapon(new WoodenStake());
-                            break;
-                    }*/
-                } else if (rand.nextInt(6) <= VAMPIRE_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Vampire v = new Vampire("Vampire" + row + col, HP_VAMPIRES, location, field);
+                    Vampire v = new Vampire("Vampire", HP_VAMPIRES, location, field);
                     characterList.add(v);
                 }
-                else if(rand.nextInt(6) <= ZOMBIE_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Zombie z = new Zombie("Zombie" + row + col, HP_ZOMBIES, location, field);
-                    characterList.add(z);
+                else if(rand.nextInt(1000) <= MADZOMBIE_CREATION_PROBABILITY) {
+                	if(nbMadZombies>0){
+	                    Location location = new Location(row, col);
+	                    MadZombie mz = new MadZombie("Mad Zombie", HP_ZOMBIES, location, field);
+	                    characterList.add(mz);
+	                    nbMadZombies--;
+                	}
                 }
-//                else if(rand.nextDouble() <= HUMAN_CREATION_PROBABILITY) {
-//                    Location location = new Location(row, col);
-//                    Human human = new Human(true, field, location);
-//                    humans.add(human);
-//                }
             }
         }
     }
