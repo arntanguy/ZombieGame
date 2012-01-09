@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import object.BaseObject;
+
 import zombieGame.Field;
 import zombieGame.Location;
 import zombieGame.Simulator;
@@ -47,11 +49,18 @@ public class Vampire extends Character {
         if (getAlive()) {
             // Move towards a source of food if found.
             Location newLocation = findFood(getLocation());
-            // try to move to a free location.
-            Location loc = getField().freeAdjacentLocation(getLocation());
+            if (newLocation == null) {
+                // No food found - try to move to a free location.
+                newLocation = getField().freeAdjacentLocation(getLocation());
+            }
             // See if it was possible to move.
-            if (loc != null) {
-                setLocation(loc);
+            if (newLocation != null) {
+            	if(getField().getObjectAt(newLocation) instanceof BaseObject){
+            		BaseObject o = (BaseObject)getField().getObjectAt(newLocation);
+            		o.setPut();
+            	}
+            		
+                setLocation(newLocation);
             } else {
                 // Overcrowding.
                 setDead();

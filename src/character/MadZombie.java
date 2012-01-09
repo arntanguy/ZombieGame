@@ -13,7 +13,7 @@ public class MadZombie extends Zombie {
 
     protected void attack(Character c) {
 
-        c.reduceHealthPoints(25);
+        c.reduceHealthPoints(50);
 
     }
 

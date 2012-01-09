@@ -3,6 +3,8 @@ package character;
 import java.util.Iterator;
 import java.util.List;
 
+import object.BaseObject;
+
 import zombieGame.Field;
 import zombieGame.Location;
 import zombieGame.Simulator;
@@ -45,6 +47,10 @@ public class Zombie extends Character {
             }
             // See if it was possible to move.
             if (newLocation != null) {
+            	if(getField().getObjectAt(newLocation) instanceof BaseObject){
+            		BaseObject o = (BaseObject)getField().getObjectAt(newLocation);
+            		o.setPut();
+            	}
                 setLocation(newLocation);
             } else {
                 // Overcrowding.
@@ -72,7 +78,7 @@ public class Zombie extends Character {
                 if (h.getAlive()) {
                 	attack(h);
                 	if(!h.getAlive()){
-               			h.setDead();
+                		h.setHasBeenKillByZombie();
                			return where;
                 	}
                 }
@@ -94,7 +100,7 @@ public class Zombie extends Character {
 	
 	protected void attack(Character c) {
 
-	    c.reduceHealthPoints(5);
+	    c.reduceHealthPoints(100);
 
 	}
 

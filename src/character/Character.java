@@ -106,9 +106,8 @@ public class Character {
 	public void reduceHealthPoints(int reduction) {
 		healthPoints = healthPoints - reduction;
 		if (healthPoints < 0) {
-			/*healthPoints = 0;
-			alive = false;*/
-		    setDead();
+			healthPoints = 0;
+			alive = false;
 		}
 	}
 	/**
