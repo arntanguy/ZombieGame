@@ -1,6 +1,5 @@
 package character;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,7 +43,11 @@ public class Vampire extends Character {
 		}
 	}
 	
-
+	/** 
+	 * A vampire need to find food. 
+	 * He will move toward a food source, or die.
+	 * @param newVampires
+	 */
     public void hunt(List<Vampire> newVampires) {
         if (getAlive()) {
             // Move towards a source of food if found.
@@ -59,7 +62,6 @@ public class Vampire extends Character {
             		BaseObject o = (BaseObject)getField().getObjectAt(newLocation);
             		o.setPut();
             	}
-            		
                 setLocation(newLocation);
             } else {
                 // Overcrowding.
@@ -81,19 +83,28 @@ public class Vampire extends Character {
         while (it.hasNext()) {
             Location where = it.next();
             Object character = getField().getObjectAt(where);
-            if (character instanceof Human) {
-                Human h = (Human) character;
-                if (h.getAlive()) {
-                	if(isThirsty){
-                		bite(h);
-                		return where;
-                	}
-                	else{
-                		attack(h);
-                		if(!h.getAlive()){
-                			h.setDead();
-                		}
-                	}
+            // XXX: Caster mieux...
+            Character c = null;
+            try {
+            	c = (Character) character;
+            } catch (ClassCastException e) {
+            	continue;
+            }
+            if (c != null) {
+                if (c.getCharacter() ==  TypeCharacter.HUMAN) {
+                    Human h = (Human) character;
+                    if (h.getAlive()) {
+                    	if(isThirsty){
+                    		bite(h);
+                    		return where;
+                    	}
+                    	else{
+                    		attack(h);
+                    		if(!h.getAlive()){
+                    			h.setDead();
+                    		}
+                    	}
+                    }
                 }
             }
         }
@@ -124,4 +135,7 @@ public class Vampire extends Character {
 	    }
 	}
 	
+    public TypeCharacter getCharacter() {
+        return TypeCharacter.VAMPIRE;
+    }
 }

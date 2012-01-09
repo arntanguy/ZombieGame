@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 import object.*;
-import object.BaseObject;
 
 import character.*;
 import character.Character;
@@ -94,7 +93,6 @@ public class Simulator {
 	    view.setColor(Vampire.class, Color.black);
 	    view.setColor(MadZombie.class, Color.red);
 	    view.setColor(BaseObject.class, Color.cyan);
-	    
 
 	    // Setup a valid starting point.
 	    reset();
@@ -136,9 +134,10 @@ public class Simulator {
 		for (Iterator<Character> it = characterList.iterator(); it.hasNext();) {
             Character c = it.next();
             if (c.getHealthPoints() <= 0) {
-            	if(c instanceof Human && !((Human) c).getHasBeenKillByZombie()){
-                it.remove();
-                c.setDead();
+            	if(c.getCharacter() == TypeCharacter.HUMAN && 
+            	        !((Human) c).getHasBeenKillByZombie()){
+                    it.remove();
+                    c.setDead();
             	}
             }
         }
@@ -164,12 +163,14 @@ public class Simulator {
 
 		for (int i = 0; i < characterList.size(); ++i) {
 			Character c = characterList.get(i);
-			if (c instanceof Human && ((Human) c).getHasBeenKillByZombie()) {
+			if (c.getCharacter() == TypeCharacter.HUMAN && 
+			        ((Human) c).getHasBeenKillByZombie()) {
 				Zombie newZombie = ((Human) c).turnIntoZombie();
 				characterList.set(i, newZombie);
 				c = null;
 			}
-			if (c instanceof Human && ((Human) c).getHasBeenBitten()) {
+			else if (c.getCharacter() == TypeCharacter.HUMAN && 
+			        ((Human) c).getHasBeenBitten()) {
 				Vampire newVampire = ((Human) c).turnIntoVampire();
 				characterList.set(i, newVampire);
 				c = null;
@@ -199,19 +200,20 @@ public class Simulator {
         // Let all characters act.
         for (Iterator<Character> it = characterList.iterator(); it.hasNext();) {
         	Character c = it.next();
-        	if(c instanceof Human){
+        	if(c.getCharacter() == TypeCharacter.HUMAN){
         		Human h = (Human) c;
         		h.run(newHumans);
         	}
-        	if(c instanceof Vampire){
+        	if(c.getCharacter() == TypeCharacter.VAMPIRE){
         		Vampire v = (Vampire) c;
         		v.hunt(newVampires);  
         	}
-        	if(c instanceof Zombie){
+        	if(c.getCharacter() == TypeCharacter.ZOMBIE){
         		Zombie z = (Zombie) c;
         		z.hunt(newZombies);
         	}
-        	if(c instanceof MadZombie){
+
+        	if(c.getCharacter() == TypeCharacter.MADZOMBIE){
         		MadZombie mz = (MadZombie) c;
         		mz.hunt(newZombies);
         	}
@@ -233,7 +235,7 @@ public class Simulator {
 		//and count the number of humans
 		int nbHumans = 0;
 		for (Character character : characterList) {
-			if (character instanceof Human) {
+			if (character.getCharacter() == TypeCharacter.HUMAN) {
 				++nbHumans;
 			}
 		}
@@ -247,7 +249,7 @@ public class Simulator {
 		//and count the number of humans
 		int nbZombies = 0;
 		for (Character character : characterList) {
-			if (character instanceof Zombie) {
+			if (character.getCharacter() == TypeCharacter.ZOMBIE) {
 				++nbZombies;
 			}
 		}
@@ -367,7 +369,7 @@ public class Simulator {
                 }
                 else if (rand.nextInt(120) <= VAMPIRE_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    Vampire v = new Vampire("Vampire" + row + col, HP_VAMPIRES, location, field);
+                    Vampire v = new Vampire("Vampire", HP_VAMPIRES, location, field);
                     characterList.add(v);
                 }
                 else if(rand.nextInt(1000) <= MADZOMBIE_CREATION_PROBABILITY) {

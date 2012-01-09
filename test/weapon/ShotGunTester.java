@@ -3,6 +3,10 @@ package weapon;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+
+import object.ShotGun;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +26,7 @@ public class ShotGunTester {
     
     private final int MUNITIONS = 6;
     private final int PUISSANCE = 2;
-    private final int HP_HUMAN = 100;
+    private final int HP = 100;
     private final int ROW = 2;
     private final int COL = 3;
     private final int TAILLE = 4;
@@ -33,14 +37,9 @@ public class ShotGunTester {
         String nomZombie = "Zombie";
         location = new Location(ROW, COL);
         field = new Field(TAILLE, TAILLE);
-        int hpZombie = 30;
-        int width = 100;
-        int depht = 100;
         shotgun = new ShotGun(MUNITIONS, PUISSANCE, field, location);
-        Location location = new Location(3, 3);
-        Field field = new Field(depht, width);
-        zombie = new Zombie(nomZombie, hpZombie, location, field);
-        human = new Human(nomHuman, HP_HUMAN, location, field);
+        zombie = new Zombie(nomZombie, HP, new Location(2, 2), field);
+        human = new Human(nomHuman, HP, location, field);
         human.setWeapon(shotgun);
     }
 
@@ -53,15 +52,15 @@ public class ShotGunTester {
 
     @Test
     public void testAttackWeap() {
-        human.encounterCharacter(zombie);
+        human.run(new ArrayList<Human>());
         assertEquals(MUNITIONS-1, shotgun.getMunition());
-        zombie.encounterCharacter(human);
-        assertEquals(HP_HUMAN, human.getHealthPoints());
+        zombie.hunt(new ArrayList<Zombie>());
+        assertEquals(HP, human.getHealthPoints());
         for(int i = 0; i < PUISSANCE; ++i) {
             zombie.endOfTurn();
         }
-        zombie.encounterCharacter(human);
-        assertEquals(HP_HUMAN-5, human.getHealthPoints());
+        zombie.hunt(new ArrayList<Zombie>());
+        assertEquals(0, human.getHealthPoints());
     }
     
     @Test
@@ -75,7 +74,7 @@ public class ShotGunTester {
     public void testIsDead() {
         assertEquals(false, shotgun.isDead());
         for(int i = 0; i < MUNITIONS; ++i) {
-            human.encounterCharacter(zombie);
+            human.run(new ArrayList<Human>());
         }
         assertEquals(true, shotgun.isDead());
     }
@@ -95,5 +94,11 @@ public class ShotGunTester {
     public void testExcPuissance() {
         int puissance = -4;
         new ShotGun(MUNITIONS, puissance, field, location);
+    }
+    
+    @Test (expected = java.lang.IllegalArgumentException.class)
+    public void testExcRecharge() {
+        int recharge = -6;
+        shotgun.recharge(recharge);
     }
 }

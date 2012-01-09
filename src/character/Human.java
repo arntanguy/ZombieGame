@@ -4,12 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import object.Ammo;
-import object.Food;
-import object.LiquidNitrogen;
-import object.ShotGun;
-import object.Weapons;
-import object.WoodenStake;
+
+import object.*;
+
 
 import zombieGame.Field;
 import zombieGame.Location;
@@ -28,13 +25,13 @@ public class Human extends Character {
 	private boolean haveWeapon;
 	private int turnsSinceLastMeal; // the human will lose health if he's too hungry
 	// A shared random number generator to control breeding.
-    private static final Random rand = Randomizer.getRandom();
- // The likelihood of a human breeding.
-    private static final double BREEDING_PROBABILITY = 0.15;
-    // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 3;
+	private static final Random rand = Randomizer.getRandom();
+	// The likelihood of a human breeding.
+	private static final double BREEDING_PROBABILITY = 0.15;
+	// The maximum number of births.
+	private static final int MAX_LITTER_SIZE = 3;
 	// Indique s'il l'humain possède une arme
-    private Weapons weapon;
+	private Weapons weapon;
 	/**
 	 * Constructor of Human class.
 	 * At the beginning of the game, humans just had dinner, and have not been bitten yet.
@@ -49,21 +46,21 @@ public class Human extends Character {
 		turnsSinceLastMeal = 0;
 		weapon = null;
 	}
-	
+
 	// Accessors and mutators
 	public boolean getHasBeenBitten() {
 		return hasBeenBitten;
 	}
-	
+
 	public void setHasBeenBitten(boolean hasBeenBitten) {
 		this.hasBeenBitten = hasBeenBitten;
 	}
-	
+
 	// Accessors and mutators
 	public boolean getHasBeenKillByZombie() {
 		return hasBeenKillByZombie;
 	}
-	
+
 	public void setHasBeenKillByZombie(){
 		this.hasBeenKillByZombie = true;
 	}
@@ -78,148 +75,190 @@ public class Human extends Character {
 			healthPoints -= 2;
 		}
 	}
-	
+
 	public void eat(){
 		turnsSinceLastMeal = 0;
 	}
-	
+
 	public void recharge(int nb){
 		((ShotGun)weapon).recharge(nb);
 		haveWeapon = true;
 	}
-	
-	 /**
-     * This is what the human does most of the time - it runs around. Sometimes
-     * it will breed or die of old age.
-     * 
-     * @param newHumans
-     *            A list to add newly born humans to.
-     */
-    public int run(List<Human> newHumans) {
-        int b = 0;
-        if (getAlive()) {
-            b =giveBirth(newHumans);
-            Location newLocation = null;
-            if(!haveWeapon){
-            	System.out.println("qsdqsfqsdfsdfsqdfjsdfjqsdfsdcnjcnjsqncjscjqcjnqjcjsqcjncjsdc");
-	            // Try to move into a free location.
-	            newLocation = getField().ObjectAdjacentLocation(getLocation());
-	            if(newLocation != null){
-	            	System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-	            	if(getField().getObjectAt(newLocation)!=null){
-	            		System.out.println("i take Object!!!!!!!!!!!!");
-		            	Object newObject = getField().getObjectAt(newLocation);
-		                if (newObject instanceof Food){
-		                    Food f = (Food) newObject;
-		                    f.useFood(this);
-		                    f.setPut();
-		                }
-		                if (newObject instanceof Ammo){
-		                    Ammo a = (Ammo) newObject;		                    
-		                    a.takeAmmo(this);
-		                }
-		                if (newObject instanceof WoodenStake) {
-		                    WoodenStake w = (WoodenStake) newObject;
-		                    setWeapon(w);
-		                    w.setPut();
-		                }
-		                if (newObject instanceof LiquidNitrogen) {
-		                    LiquidNitrogen l = (LiquidNitrogen) newObject;
-		                    setWeapon(l);
-		                    l.setPut();
-		                }
-		                if (newObject instanceof ShotGun) {
-		                    ShotGun s = (ShotGun) newObject;
-		                    setWeapon(s);
-		                    s.setPut();
-		                }
-	            	}
-	            }
-            }
-            else if(haveWeapon){
-            	 say("I have a weapon!");
-            	 // Move towards a source of food if found.
-                newLocation = findTarget(getLocation());
-            }
-            if (newLocation != null) {
-                setLocation(newLocation);
-            } else {
-                // Overcrowding.
-                setDead();
-            }
-        }
-        return b;
-    }
-    /**
-     * Tell the human to look for target adjacent to its current location. 
-     * 
-     * @param location
-     *            Where in the field it is located.
-     * @return Where target was found, or null if it wasn't.
-     */
-    private Location findTarget(Location location) {
-        List<Location> adjacent = getField().adjacentLocations(location);
-        Iterator<Location> it = adjacent.iterator();
-        while (it.hasNext()) {
-            Location where = it.next();
-            Object character = getField().getObjectAt(where);
-            if(weapon == null){
-            	haveWeapon = false;
-            }
-            else{
-	            if ((character instanceof Vampire) && 
-	            		(weapon.GetTypeTarget()==1)) {
-	                Vampire v = (Vampire) character;
-	                if (v.getAlive()) {
-	                	weapon.attackWeap(this,v);
-	                }
-	            }
-	            if ((character instanceof Zombie) && 
-	            		((weapon.GetTypeTarget()==2)||(weapon.GetTypeTarget()==3))) {
-	                Zombie z = (Zombie) character;
-	                if (z.getAlive()) {
-	                	weapon.attackWeap(this,z);
-	                }
-	            }
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Check whether or not this human is to give birth at this step. New
-     * births will be made into free adjacent locations.
-     * 
-     * @param newhumans
-     *            A list to add newly born humans to.
-     */
-    private int giveBirth(List<Human> newhumans) {
-        // New humans are born into adjacent locations.
-        // Get a list of adjacent free locations.
-        List<Location> free = getField().getFreeAdjacentLocations(getLocation());
-        int births = breed();
-        int b= 0;
-        for (b = 0; b < births && free.size() > 0; b++) {
-            Location loc = free.remove(0);
-            Human young = new Human("human", 100, loc, getField());
-            newhumans.add(young);
-        }
-        return b;
-    }
-    
-    /**
-     * Generate a number representing the number of births, if it can breed.
-     * 
-     * @return The number of births (may be zero).
-     */
-    private int breed() {
-        int births = 0;
-        if (rand.nextDouble() <= BREEDING_PROBABILITY) {
-            births = rand.nextInt(MAX_LITTER_SIZE) + 1;
-        }
-        return births;
-    }
-   
+
+	/**
+	 * This is what the human does most of the time - it runs around. Sometimes
+	 * it will breed or die of old age.
+	 * 
+	 * @param newHumans
+	 *            A list to add newly born humans to.
+	 */
+	public void run(List<Human> newHumans) {
+		if (getAlive()) {
+
+			giveBirth(newHumans);
+			Location newLocation = null;
+			if(!haveWeapon){
+				System.out.println("qsdqsfqsdfsdfsqdfjsdfjqsdfsdcnjcnjsqncjscjqcjnqjcjsqcjncjsdc");
+				// Try to move into a free location.
+				newLocation = getField().ObjectAdjacentLocation(getLocation());
+				if(newLocation != null){
+					System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+					if(getField().getObjectAt(newLocation)!=null){
+						System.out.println("i take Object!!!!!!!!!!!!");
+						Object newObject = getField().getObjectAt(newLocation);
+						if (newObject instanceof Food){
+							Food f = (Food) newObject;
+							f.useFood(this);
+							f.setPut();
+						}
+						if (newObject instanceof Ammo){
+							Ammo a = (Ammo) newObject;		                    
+							a.takeAmmo(this);
+						}
+						if (newObject instanceof WoodenStake) {
+							WoodenStake w = (WoodenStake) newObject;
+							setWeapon(w);
+							w.setPut();
+						}
+						if (newObject instanceof LiquidNitrogen) {
+							LiquidNitrogen l = (LiquidNitrogen) newObject;
+							setWeapon(l);
+							l.setPut();
+						}
+						if (newObject instanceof ShotGun) {
+							ShotGun s = (ShotGun) newObject;
+							setWeapon(s);
+							s.setPut();
+						}
+					}
+				}
+			}
+			else  if(haveWeapon){
+				say("I have a weapon!");
+				// Move towards a source of food if found.
+				findTarget(getLocation());
+			}
+			// Try to move into a free location.
+			newLocation = getField().freeAdjacentLocation(getLocation());
+			if (newLocation != null) {
+				//System.out.println(newLocation);
+				setLocation(newLocation);
+			} else {
+				// Overcrowding
+				setDead();
+			}
+		}
+	}
+	/**
+	 * Tell the human to look for target adjacent to its current location. 
+	 * 
+	 * @param location
+	 *            Where in the field it is located.
+	 * @return Where target was found, or null if it wasn't.
+	 */
+	private void findTarget(Location location) {
+		List<Location> adjacent = getField().adjacentLocations(location);
+		Iterator<Location> it = adjacent.iterator();
+		while (it.hasNext()) {
+			Location where = it.next();
+			Object character = getField().getObjectAt(where);
+			if(weapon == null){
+				haveWeapon = false;
+			}
+			else{
+				Character c = null;
+				try {
+					c = (Character) character;
+				} catch (ClassCastException e) {
+					continue;
+				}
+				if (c != null) {
+					if ((c.getCharacter() == TypeCharacter.VAMPIRE) && 
+							(weapon.GetTypeTarget()==1)) {
+						Vampire v = (Vampire) character;
+						if (v.getAlive()) {
+							weapon.attackWeap(this,v);
+						}
+					}
+					if ((c.getCharacter() == TypeCharacter.ZOMBIE) && 
+							((weapon.GetTypeTarget()==2)||(weapon.GetTypeTarget()==3))) {
+						Zombie z = (Zombie) character;
+						if (z.getAlive()) {
+							weapon.attackWeap(this,z);
+						}
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Tell the human to look for target adjacent to its current location. 
+	 * 
+	 * @param location
+	 *            Where in the field it is located.
+	 * @return Where target was found, or null if it wasn't.
+	 */
+	private Location findTarget2(Location location) {
+		List<Location> adjacent = getField().adjacentLocations(location);
+		Iterator<Location> it = adjacent.iterator();
+		while (it.hasNext()) {
+			Location where = it.next();
+			Object character = getField().getObjectAt(where);
+			if(weapon == null){
+				haveWeapon = false;
+			}
+			else{
+				if ((character instanceof Vampire) && 
+						(weapon.GetTypeTarget()==1)) {
+					Vampire v = (Vampire) character;
+					if (v.getAlive()) {
+						weapon.attackWeap(this,v);
+					}
+				}
+				if ((character instanceof Zombie) && 
+						((weapon.GetTypeTarget()==2)||(weapon.GetTypeTarget()==3))) {
+					Zombie z = (Zombie) character;
+					if (z.getAlive()) {
+						weapon.attackWeap(this,z);
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Check whether or not this human is to give birth at this step. New
+	 * births will be made into free adjacent locations.
+	 * 
+	 * @param newhumans
+	 *            A list to add newly born humans to.
+	 */
+	private void giveBirth(List<Human> newhumans) {
+		// New humans are born into adjacent locations.
+		// Get a list of adjacent free locations.
+		List<Location> free = getField().getFreeAdjacentLocations(getLocation());
+		int births = breed();
+		for (int b = 0; b < births && free.size() > 0; b++) {
+			Location loc = free.remove(0);
+			Human young = new Human("human", 100, loc, getField());
+			newhumans.add(young);
+		}
+	}
+
+	/**
+	 * Generate a number representing the number of births, if it can breed.
+	 * 
+	 * @return The number of births (may be zero).
+	 */
+	private int breed() {
+		int births = 0;
+		if (rand.nextDouble() <= BREEDING_PROBABILITY) {
+			births = rand.nextInt(MAX_LITTER_SIZE) + 1;
+		}
+		return births;
+	}
+
 	/**
 	 * Transform this human who has been bitten, into a blood-thirsty vampire.
 	 * @return a new object of class Vampire, with the same name and healthpoints
@@ -228,29 +267,34 @@ public class Human extends Character {
 	public Vampire turnIntoVampire() {
 		return new Vampire(name+"Vampire", healthPoints, getLocation(), getField());
 	}
-	
+
 	public Zombie turnIntoZombie() {
 		return new Zombie(name, 30, getLocation(), getField());
 	}
-	
+
 	public void setWeapon(Weapons weapon) {
-	    this.weapon = weapon;
-	    haveWeapon = true;
+		this.weapon = weapon;
+		haveWeapon = true;
 	}
 	public boolean getHaveWeapon(){
 		return haveWeapon;
 	}
-	
+
 	public Weapons getWeapon() {
-	    return weapon;
+		return weapon;
 	}
-	
+
+
 	public void weaponRemove(){
 		weapon = null;
 		haveWeapon = false;
 	}
-	
+
 	public void noAmmo(){
 		haveWeapon = false;
+	}
+
+	public TypeCharacter getCharacter() {
+		return TypeCharacter.HUMAN;
 	}
 }

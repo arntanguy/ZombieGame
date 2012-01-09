@@ -4,6 +4,7 @@ import zombieGame.Field;
 import zombieGame.Location;
 import character.Character;
 import character.Human;
+import character.TypeCharacter;
 import character.Vampire;
 
 public class WoodenStake extends Weapons {
@@ -15,8 +16,9 @@ public class WoodenStake extends Weapons {
         utilise = false;
     }
     
+
     public void attackWeap(Human h, Character character) {
-        if (utilise == false && character instanceof Vampire) {
+        if (utilise == false && character.getCharacter() == TypeCharacter.VAMPIRE) {
             utilise = true;
             character.setDead();
             h.weaponRemove();

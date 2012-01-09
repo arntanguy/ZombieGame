@@ -73,14 +73,23 @@ public class Zombie extends Character {
         while (it.hasNext()) {
             Location where = it.next();
             Object character = getField().getObjectAt(where);
-            if (character instanceof Human) {
-                Human h = (Human) character;
-                if (h.getAlive()) {
-                	attack(h);
-                	if(!h.getAlive()){
-                		h.setHasBeenKillByZombie();
-               			return where;
-                	}
+
+            Character c = null;
+            try {
+            	c = (Character) character;
+            } catch (ClassCastException e) {
+            	continue;
+            }
+            if (c != null) {
+                if (c.getCharacter() == TypeCharacter.HUMAN) {
+                    Human h = (Human) character;
+                    if (h.getAlive()) {
+                    	attack(h);
+                    	if(!h.getAlive()){
+                    		h.setHasBeenKillByZombie();
+                   			return where;
+                    	}
+                    }
                 }
             }
         }
@@ -107,7 +116,8 @@ public class Zombie extends Character {
 	public void encounterCharacter(Character c) {
 	    // Attack if the enemy is human or vampire (then 50% chance)
 	    if (getAlive() && touchByWeap == 0) {
-    	    if (c instanceof Human || (c instanceof Vampire && Simulator.GenerateRandomBoolean())) {
+	        if (c.getCharacter() == TypeCharacter.HUMAN || 
+                    (c.getCharacter() == TypeCharacter.VAMPIRE && Simulator.GenerateRandomBoolean())) {
     	        super.say(c.getName() + ", I'm gonna kill you!!"); // want Character#say not Zombie#say
     	        attack(c);
     	    }
@@ -132,5 +142,9 @@ public class Zombie extends Character {
 	 */
     public int getTouchByWeap() {
          return touchByWeap;
+    }
+    
+    public TypeCharacter getCharacter() {
+        return TypeCharacter.ZOMBIE;
     }
 }

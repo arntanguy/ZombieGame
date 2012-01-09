@@ -70,6 +70,7 @@ public class VampireTester {
         while (it.hasNext()) {
             Location where = it.next();
             Object character = vampire.getField().getObjectAt(where);
+            
             if (character instanceof Human) {
                 Human h = (Human) character;
                 assertEquals(HP-10, h.getHealthPoints());
@@ -91,5 +92,10 @@ public class VampireTester {
         Human human = new Human ("Human", HP, new Location(ROW-1, COL), field);
         vampire.encounterCharacter(human);
         assertEquals(HP-10, human.getHealthPoints());
+    }
+    
+    @Test
+    public void testGetCharacter() {
+        assertEquals(TypeCharacter.VAMPIRE, vampire.getCharacter());
     }
 }

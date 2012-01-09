@@ -4,8 +4,7 @@ import zombieGame.Field;
 import zombieGame.Location;
 import character.Character;
 import character.Human;
-import character.Vampire;
-import character.Zombie;
+import character.TypeCharacter;
 
 public class LiquidNitrogen extends Weapons {
     
@@ -17,8 +16,8 @@ public class LiquidNitrogen extends Weapons {
         this.quantite = quantite;
     }
     
-    public void attackWeap (Human h,Character character) {
-        if (quantite > 0 && (character instanceof Zombie || character instanceof Vampire)) {
+    public void attackWeap (Human h, Character character) {
+        if (quantite > 0 && (character.getCharacter() == TypeCharacter.ZOMBIE)) {
             --quantite;
             character.setDead();
         }
@@ -28,6 +27,8 @@ public class LiquidNitrogen extends Weapons {
     }
     
     public void recharge(int quantite) {
+        if (quantite < 0) 
+            throw new IllegalArgumentException("Ne doit pas être inférieur à 0");
         this.quantite += quantite;
     }
     
