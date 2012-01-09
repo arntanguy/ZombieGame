@@ -55,10 +55,6 @@ public class LiquidNitrogenTester {
         human.run(new ArrayList<Human>());
         assertEquals(false, zombie.getAlive());
         assertEquals(QUANTITE-1, nitrogen.getQuantite());
-        Vampire vampire = new Vampire("Vampire", HP, new Location(human.getLocation().getRow(), 
-                human.getLocation().getCol()-1), field);
-        human.run(new ArrayList<Human>());
-        assertEquals(QUANTITE-2, nitrogen.getQuantite());
     }
     
     @Test

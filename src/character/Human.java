@@ -125,8 +125,7 @@ public class Human extends Character {
             Object character = getField().getObjectAt(where);
             Character c = (Character) character;
             if (c != null) {
-                if ((c.getCharacter() == TypeCharacter.VAMPIRE) && 
-                        ((weapon.GetTypeTarget()==1) || (weapon.GetTypeTarget()==2))) {
+                if ((c.getCharacter() == TypeCharacter.VAMPIRE) && (weapon.GetTypeTarget()==1)) {
                     Vampire v = (Vampire) character;
                     if (v.getAlive()) {
                     	weapon.attackWeap(v);

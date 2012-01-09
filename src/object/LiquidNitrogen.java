@@ -18,8 +18,7 @@ public class LiquidNitrogen extends Weapons {
     }
     
     public void attackWeap (Character character) {
-        if (quantite > 0 && (character.getCharacter() == TypeCharacter.ZOMBIE || 
-                character.getCharacter() == TypeCharacter.VAMPIRE)) {
+        if (quantite > 0 && (character.getCharacter() == TypeCharacter.ZOMBIE)) {
             --quantite;
             character.setDead();
         }
