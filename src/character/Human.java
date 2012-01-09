@@ -59,7 +59,7 @@ public class Human extends Character {
 	public boolean getHasBeenKillByZombie() {
 		return hasBeenKillByZombie;
 	}
-	
+
 	public void setHasBeenKillByZombie(){
 		this.hasBeenKillByZombie = true;
 	}

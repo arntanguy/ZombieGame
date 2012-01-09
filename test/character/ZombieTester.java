@@ -47,8 +47,9 @@ public class ZombieTester {
         List<Zombie> newZombies = new ArrayList<Zombie> ();
         zombie.hunt(newZombies);
         assertEquals(HP-100, human.getHealthPoints());
-        //assertEquals(true, human.getHasBeenKillByZombie());
-        human = new Human("Human", HP, new Location (ROW-1,COL), field);
+        assertEquals(true, human.getHasBeenKillByZombie());
+        human = new Human("Human", HP, new Location (zombie.getLocation().getRow()-1, 
+                zombie.getLocation().getCol()), field);
         int munition = 3;
         int puissance = 2;
         ShotGun shotgun = new ShotGun(munition, puissance, field, 
